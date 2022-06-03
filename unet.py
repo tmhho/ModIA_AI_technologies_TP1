@@ -71,6 +71,12 @@ class UNet(nn.Module):
         out = self.last_conv(x)
         
         return out
+    
+    def get_features(self, x):
+        x, _ = self.downsample_block_1(x)
+        x, _ = self.downsample_block_2(x)
+        x, _ = self.downsample_block_3(x)
+        return x
 
         
 if __name__=='__main__':
