@@ -7,13 +7,13 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 from mnist_net import MNISTNet
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(net, optimizer, loader, writer, epochs=10):
+def train(net, optimizer, loader, epochs=10):
     criterion = nn.CrossEntropyLoss()
     for epoch in range(epochs):
         running_loss = []
@@ -27,7 +27,7 @@ def train(net, optimizer, loader, writer, epochs=10):
             loss.backward()
             optimizer.step()
             t.set_description(f'training loss: {mean(running_loss)}')
-        writer.add_scalar('training loss', mean(running_loss), epoch)
+        # writer.add_scalar('training loss', mean(running_loss), epoch)
 def test(model, dataloader):
     test_corrects = 0
     total = 0
@@ -54,7 +54,7 @@ if __name__=='__main__':
     epochs = args.epochs
     batch_size = args.batch_size
     lr = args.lr
-    writer = SummaryWriter(f'runs/MNIST')
+    # writer = SummaryWriter(f'runs/MNIST')
     # transforms
     transform = transforms.Compose(
         [transforms.ToTensor(),
@@ -83,14 +83,14 @@ if __name__=='__main__':
     perm = torch.randperm(len(trainset.data))
     images, labels = trainset.data[perm][:256], trainset.targets[perm][:256]
     images = images.unsqueeze(1).float().to(device)
-    with torch.no_grad():
-        embeddings = net.get_features(images)
-        writer.add_embedding(embeddings,
-                        metadata=labels,
-                        label_img=images, global_step=1)
+    # with torch.no_grad():
+    #     embeddings = net.get_features(images)
+    #     writer.add_embedding(embeddings,
+    #                     metadata=labels,
+    #                     label_img=images, global_step=1)
 
-    # save networks computational graph in tensorboard
-    writer.add_graph(net, images)
-    # save a dataset sample in tensorboard
-    img_grid = torchvision.utils.make_grid(images[:64])
-    writer.add_image('mnist_images', img_grid)
+    # # save networks computational graph in tensorboard
+    # writer.add_graph(net, images)
+    # # save a dataset sample in tensorboard
+    # img_grid = torchvision.utils.make_grid(images[:64])
+    # writer.add_image('mnist_images', img_grid)
